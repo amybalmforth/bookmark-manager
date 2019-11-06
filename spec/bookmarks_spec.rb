@@ -1,15 +1,18 @@
 require 'bookmarks'
 
 describe Bookmarks do
-  let(:bookmark) { described_class.new }
+  #let(:bookmark) { described_class.new }
 
   describe '#all' do
     it 'returns all bookmarks' do
-      #bookmarks = Bookmarks.all
-      bookmarks = Bookmarks.test_db
-      expect(bookmarks).to include("http://makersacademy.com")
+      connection = PG.connect(dbname: 'bookmark_manager_test')
+      connection.exec("INSERT INTO bookmarks (url) VALUES ('http://www.makersacademy.com');")
+      connection.exec("INSERT INTO bookmarks (url) VALUES ('http://www.destroyallsoftware.com');")
+      connection.exec("INSERT INTO bookmarks (url) VALUES ('http://www.codewars.com');")
+      bookmarks = Bookmarks.all
+      expect(bookmarks).to include("http://www.makersacademy.com")
       expect(bookmarks).to include("http://www.destroyallsoftware.com")
-      expect(bookmarks).to include("http://www.msn.com")
+      expect(bookmarks).to include("http://www.codewars.com")
     end
   end
 end
